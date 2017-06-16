@@ -2,6 +2,8 @@
 
 > vue + node + mongodb + mongoose 技术分享博客，用以学习node和mongodb
 
+受 [FatDong1](https://github.com/FatDong1) 的启发 并向公司后端请教，开始mongodb和node的学习尝试
+
 ## Build Setup
 
 ``` bash
