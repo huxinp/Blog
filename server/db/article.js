@@ -3,6 +3,7 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const generateSerialNumber = require('./generateSerialNumber.js');
 
 module.exports = ArticleSchema = new Schema(
 	{
@@ -23,3 +24,17 @@ module.exports = ArticleSchema = new Schema(
 
 //生成自增长的sid
 
+ArticleSchema.pre('save', next => {
+	if(this.isNew){
+		generateSerialNumber('Article', (err, result) => {
+			if(err){
+				console.log(err);
+			}else{
+				this.sid = result.value.seq
+				next();
+			}
+		});
+	}else{
+		next();
+	}
+})
