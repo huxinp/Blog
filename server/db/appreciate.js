@@ -26,6 +26,6 @@ ReciateSchema.pre('save', next => {
 			}
 		});
 	}else{
-		next():
+		next();
 	}
 });

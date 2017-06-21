@@ -30,11 +30,11 @@ ArticleSchema.pre('save', next => {
 			if(err){
 				console.log(err);
 			}else{
-				this.sid = result.value.seq
+				this.sid = result.value.seq;
 				next();
 			}
 		});
 	}else{
 		next();
 	}
-})
+});
