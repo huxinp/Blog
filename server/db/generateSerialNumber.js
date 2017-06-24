@@ -28,7 +28,7 @@ var SerialNumSchema = new Schema({
 
 var SerialNum = mongoose.model('SerialNum', SerialNumSchema);
 
-export const generateSerialNumber = (serialNumName, callback) => {
+const generateSerialNumber = (serialNumName, callback) => {
 	SerialNum.findById(serialNumName, (err, doc) => {
 		if(err){
 			console.log(err);
@@ -57,3 +57,6 @@ export const generateSerialNumber = (serialNumName, callback) => {
 		}
 	});
 };
+
+
+module.exports = generateSerialNumber;
