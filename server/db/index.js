@@ -16,13 +16,13 @@ const TopicSchema = require('./topic.js');
 const TopicContentSchema = require('./topic_content.js');
 const UserFanSchema = require('./user_fan.js');
 
-mongoose.connect('mongodb://127.0.0.1/Blog');
+mongoose.connect('mongodb://127.0.0.1:27017/Blog');
 const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'Datebase connection error.'));
 db.once('open', () => {
 	console.log('The datebase has connected.');
-})
+});
 
 
 
@@ -42,7 +42,7 @@ module.exports = {
 	//积分
 	Score: mongoose.model('Score', ScoreSchema),
 	//点赞
-	Appreciate: mongoose.model('Appreciate', AppreciateSchema),	
+	Appreciate: mongoose.model('Appreciate', AppreciateSchema),
 	//评论
 	Comment: mongoose.model('Comment', CommentSchema),
 	//接收到的评论

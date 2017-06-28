@@ -28,13 +28,15 @@ module.exports = UserSchema = new Schema(
 		lastLoginDatetime: Date, 	//上一次登录时间
 		countReciateNot: Number,	//未读点赞数
 		countCommentNot: Number		//未读评论数
-	}, 
+	},
 	{ versionKey: false }
 );
 
 
 UserSchema.pre('save', next => {
+	console.log('pre save');
 	if(this.isNew){
+		console.log('isNew');
 		generateSerialNumber('User', (err, result) => {
 			if(err){
 				console.log(err);

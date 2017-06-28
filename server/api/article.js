@@ -49,7 +49,7 @@ router.get('/api/article/content/:sid', (req, res) => {
 			console.log(err);
 		}else{
 			if(article.isPublish === 1){
-				article.countHitted++;//点击(阅读)次数 
+				article.countHitted++;//点击(阅读)次数
 				res.status(200).send(article);
 			}else if(article.isPublish === 2){
 				res.status(200).send(article);
@@ -140,3 +140,5 @@ router.get('/api/article/search', (req, res) => {//type | keyword | currentPage 
 		});
 	}
 });
+
+module.exports = router;

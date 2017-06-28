@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const confirmToken = require('../middlewares/confirmToken.js');
-const rand = require('cspring');
+const rand = require('csprng');
 const sha1 = require('sha1');
 /*
 {
@@ -41,7 +41,7 @@ router.post('/api/user/update', confirmToken, (req, res) => {
 		sex: req.body.sex,
 		age: req.body.age,
 		mobilePhone: req.body.mobilePhone,
-		password: sha1(req.body.password + salt), 
+		password: sha1(req.body.password + salt),
 		salt: salt,
 		icon: req.body.icon,
 		bgPicture: req.body.bgPicture,
@@ -53,10 +53,9 @@ router.post('/api/user/update', confirmToken, (req, res) => {
 });
 
 //注册账户
-router.post('/api/user/signIn', (req, res) => {
+router.post('/api/signin', (req, res) => {
 	const salt = rand(160, 36);
 	const user = {
-		sid: Number,								//记录流水号
 		name: req.body.name,						//真实姓名
 		nickName: req.body.nickName,				//昵称
 		sex: req.body.sex,							//1 男     2 女     3 未知
@@ -78,6 +77,13 @@ router.post('/api/user/signIn', (req, res) => {
 		countReciateNot: 0,							//未读点赞数
 		countCommentNot: 0							//未读评论数
 	};
-	new db.User(user).save();
-	res.status(200).send('succeed in sign in');
+	new db.User(user).save((err, doc) => {
+		if(err){
+			console.log(err);
+		}else{
+			res.status(200).send(doc, 0, '注册成功');
+		}
+	});
 });
+
+module.exports = router;
