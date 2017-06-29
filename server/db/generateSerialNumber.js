@@ -21,40 +21,23 @@ export const generateSerialNumber = baseNumber => {
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var SerialNumSchema = new Schema({
+const SerialNumSchema = new Schema({
 	_id: {type: String, required: true},
-	seq: {type: Number, default: 0}
+	seq: {type: Number, default: 100000}
 });
 
-var SerialNum = mongoose.model('SerialNum', SerialNumSchema);
+const SerialNum = mongoose.model('SerialNum', SerialNumSchema);
 
-module.exports = generateSerialNumber = (serialNumName, callback) => {
-	console.log(serialNumName + '生成sid');
+module.exports = generateSerialNumber = (serialNumName, next) => {
 	SerialNum.findById(serialNumName, (err, doc) => {
 		if(err){
-			console.log(err);
+			throw err;
 		}else if(!err && !doc){//没有发生错误，没有查询到    第一次生成
 			let obj = {};
 			obj._id = serialNumName;
-			let serialNum = new SerialNum(obj);
-			serialNum.save((err, doc) => {
-				if(err){
-					callback(null);
-					return;
-				}
-				callback(doc);
-			})
-		}else {
-			SerialNum.findByIdAndUpdate(
-				serialNumName, {$inc: {seq: 1}},
-				(err, doc) => {
-					if(err){
-						callback(null);
-						return;
-					}
-					callback(doc);
-				}
-			);
+			new SerialNum(obj).save(next)
+		}else {//没有发生错误   且 查询到了  不是第一次生成,   根据原有的值 +1  生成sid
+			SerialNum.findByIdAndUpdate(serialNumName, {$inc: {seq: 1}}, next);
 		}
 	});
 };

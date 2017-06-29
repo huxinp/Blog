@@ -1,7 +1,10 @@
 /*
 *	用户结构
 **/
-const mongoose = require('mongoose');
+const Promise = require('bluebird');
+const mongoose = Promise.promisifyAll(require('mongoose'));
+mongoose.Promise = Promise;
+// const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const generateSerialNumber = require('./generateSerialNumber.js');
 
@@ -33,15 +36,14 @@ module.exports = UserSchema = new Schema(
 );
 
 
-UserSchema.pre('save', next => {
-	console.log('pre save');
+UserSchema.pre('save', function(next){
+	//这里不能用箭头函数,   箭头函数 this 指向 undefined
 	if(this.isNew){
-		console.log('isNew');
-		generateSerialNumber('User', (err, result) => {
+		generateSerialNumber('User', (err, doc) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else {
-				this.sid = result.value.seq;
+				this.sid = doc.seq;
 				next();
 			}
 		});
