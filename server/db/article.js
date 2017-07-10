@@ -11,7 +11,7 @@ module.exports = ArticleSchema = new Schema(
 		topicSid: Number,			//话题sid
 		authorSid: Number,			//作者
 		title: String,				//标题
-		pictrue: String,			//预览图把
+		picture: String,			//预览图把
 		content: String,			//内容文本
 		countCommented: Number,		//被评论次数
 		countReciated: Number,	//被点赞次数

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const secret = require('../../config').jwt;
 
 //校验token是否正确
-const confirmToken = (req, res, next) => {
+const confirmToken = function(req, res, next){
 	if(!req.headers.authorization){
 		res.status(401).end('no token');
 	}else {

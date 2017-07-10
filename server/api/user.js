@@ -6,11 +6,11 @@ const confirmToken = require('../middlewares/confirmToken.js');
 const rand = require('csprng');
 const sha1 = require('sha1');
 
-const result = require('./result');
+const result = require('../tools/result');
 /*
 {
 	sid: Number,				//记录流水号
-	name: String,				//真实姓名
+	account: String,				//真实姓名
 	nickName: String,			//昵称
 	sex: Number,				//1 男     2 女     3 未知
 	age: Number,				//年龄
@@ -38,7 +38,7 @@ router.post('/api/user/update', confirmToken, (req, res) => {
 	const salt = rand(160, 36);
 	const user = {
 		sid: sid,
-		name: req.body.name,
+		account: req.body.account,
 		nickName: req.body.nickName,
 		sex: req.body.sex,
 		age: req.body.age,
@@ -56,9 +56,9 @@ router.post('/api/user/update', confirmToken, (req, res) => {
 
 //注册账户
 router.post('/api/signin', (req, res) => {
-	if(!req.body.name){
+	if(!req.body.account){
 		res.status(200).send(result({}, 2, '姓名不能为空'));
-	}else if(req.body.name.length < 2 || !req.body.name.replace(/' '/g, '')){
+	}else if(req.body.account.length < 2 || !req.body.account.replace(/' '/g, '')){
 		res.status(200).send(result({}, 3, '姓名不对吧'));
 	}else if(!req.body.nickName){
 		res.status(200).send(result({}, 4, '昵称不能为空'));
@@ -70,38 +70,55 @@ router.post('/api/signin', (req, res) => {
 		res.status(200).send(result({}, 7, '请输入正确的号码'));
 	}else if(req.body.password.length < 6){
 		res.status(200).send(result({}, 8, '密码不合法'));
-	}else {
-		/*	if(!req.body.icon){
-		 res.status(200).send(result({}, 9, '请上传头像'));
-		 }*/
-		const salt = rand(160, 36);
-		const user = {
-			name: req.body.name,						//真实姓名
-			nickName: req.body.nickName,				//昵称
-			sex: req.body.sex,							//1 男     2 女     3 未知
-			age: req.body.age,							//年龄
-			mobilePhone: req.body.mobilePhone, 			//手机号
-			password: sha1(req.body.password + salt),	//密码
-			salt: salt,									//密码加密的盐
-			icon: req.body.icon,						//头像
-			bgPicture: req.body.bgPicture,				//背景图片
-			signature: req.body.signature, 				//签名
-			birthday: req.body.birthday,				//生日
-			userLevelSid: 0,							//用户等级sid
-			userVFlagSid: 0,							//用户标识sid
-			countFollowers: 0,							//关注我的人数
-			countUsersBeFllo: 0, 						//我关注的人数
-			countMainPageBe: 0, 						//主页被访问次数
-			totalContents: 0,							//发布的内容总数
-			lastLoginDatetime: Date(), 					//上一次登录时间
-			countReciateNot: 0,							//未读点赞数
-			countCommentNot: 0							//未读评论数
-		};
-		new db.User(user).save((err, doc) => {
-			if (err) {
+	}else if(!req.body.icon){
+		res.status(200).send(result({}, 9, '请上传头像'));
+	}else{
+		//查询账号和昵称是否有重复
+		db.User.find({
+				$or: [//多条件查询
+					{account: req.body.account},
+					{nickName: req.body.nickName}
+				]
+			}, (err, doc) => {
+			if(err){
 				throw err;
-			} else {
-				res.status(200).send(result(doc, 0, '注册成功'));
+			}else if(doc){
+				//账号或昵称有重复
+				console.log(doc);
+				if(doc.length === 0){
+					let salt = rand(160, 36),
+						user = {
+						account: req.body.account,					//账号
+						nickName: req.body.nickName,				//昵称
+						sex: req.body.sex,							//1 男     2 女     3 未知
+						age: req.body.age,							//年龄
+						mobilePhone: req.body.mobilePhone, 			//手机号
+						password: sha1(req.body.password + salt),	//密码
+						salt: salt,									//密码加密的盐
+						icon: req.body.icon,						//头像
+						bgPicture: req.body.bgPicture,				//背景图片
+						signature: req.body.signature, 				//签名
+						birthday: req.body.birthday,				//生日
+						userLevelSid: 0,							//用户等级sid
+						userVFlagSid: 0,							//用户标识sid
+						countFollowers: 0,							//关注我的人数
+						countUsersBeFllo: 0, 						//我关注的人数
+						countMainPageBe: 0, 						//主页被访问次数
+						totalContents: 0,							//发布的内容总数
+						lastLoginDatetime: Date(), 					//上一次登录时间
+						countReciateNot: 0,							//未读点赞数
+						countCommentNot: 0							//未读评论数
+					};
+					new db.User(user).save((err, doc) => {
+						if (err) {
+							throw err;
+						} else {
+							res.status(200).send(result(doc, 0, '注册成功'));
+						}
+					});
+				}else {
+					res.status(200).send(result({}, 1, '账号或昵称已存在'));
+				}
 			}
 		});
 	}

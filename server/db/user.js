@@ -6,17 +6,18 @@ const mongoose = Promise.promisifyAll(require('mongoose'));
 mongoose.Promise = Promise;
 // const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const db = require('../db');
 const generateSerialNumber = require('./generateSerialNumber.js');
 
 module.exports = UserSchema = new Schema(
 	{
 		sid: Number,				//记录流水号
-		name: String,				//真实姓名
-		nickName: String,			//昵称
+		account: {type: String, unique: true, required: true},			//账号
+		nickName: {type: String, unique: true, required: true},			//昵称
 		sex: Number,				//1 男     2 女     3 未知
 		age: Number,				//年龄
-		mobilePhone: String, 		//手机号
-		password: String,			//密码
+		mobilePhone: {type: String, unique: true, required: true}, 		//手机号
+		password: {type: String, required: true},			//密码
 		salt: String,				//密码加密的盐
 		icon: String,				//头像
 		bgPicture: String,			//背景图片
@@ -32,12 +33,12 @@ module.exports = UserSchema = new Schema(
 		countReciateNot: Number,	//未读点赞数
 		countCommentNot: Number		//未读评论数
 	},
-	{ versionKey: false }
+	{ versionKey: false },
+	{ strict: true}
 );
 
 
-UserSchema.pre('save', function(next){
-	//这里不能用箭头函数,   箭头函数 this 指向 undefined
+UserSchema.pre('save', function(next){//这里不能用箭头函数,   箭头函数 this 指向 undefined
 	if(this.isNew){
 		generateSerialNumber('User', (err, doc) => {
 			if(err){

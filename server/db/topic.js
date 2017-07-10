@@ -12,18 +12,18 @@ module.exports = TopicSchema = new Schema(
 		icon: String,
 		picture: String,			//大图
 		countContents: Number,		//内容数量
-		descr: String				
+		descr: String
 	},
 	{ versionKey: false }
 );
 
-TopicSchema.pre('save', next => {
+TopicSchema.pre('save', function(next){
 	if(this.isNew){
-		generateSerialNumber('Topic', (err, result) => {
+		generateSerialNumber('Topic', (err, doc) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else {
-				this.sid = result.value.seq;
+				this.sid = doc.seq;
 				next();
 			}
 		});

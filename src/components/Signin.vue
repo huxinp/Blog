@@ -1,18 +1,33 @@
 <template>
 	<div class="panel panel-primary center-block signin center-block">
+		<!--<img src="../assets/images/游戏化绩效系统.png" alt="">-->
 		<div class="panel-heading">注册</div>
 		<div class="panel-body">
 			<form class="form-horizontal" name="login">
 				<div class="form-group">
-					<label for="UserName" class="col-sm-2 control-label">用户名:</label>
+					<label for="UserName" class="col-sm-2 control-label">账户名:</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id="userName" placeholder="请输入用户名..." v-model="userName" />
+						<input type="text" class="form-control" id="userName" placeholder="请输入用户名..." v-model="account" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="nickName" class="col-sm-2 control-label">昵称:</label>
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id="nickName" v-model="nickName" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="icon" class="col-sm-2 control-label">头像:</label>
+					<div class="col-sm-10">
+						<label for="icon" class="btn btn-default radius0 col-sm-3">上传</label>
+						<input v-show="false" type="file" id="icon" name="icon" ref="icon" accept="image/*" @change="imgUpload" />
+					</div>
+				</div>
+				<div v-if="icon" class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="img-owner">
+							<img :src="icon" alt="" />
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
@@ -64,10 +79,11 @@
 </template>
 <script type="text/ecmascript-6">
 	import axios from 'axios';
+	import {toast} from '../assets/js/common';
     export default {
         data(){
             return {
-                userName: '',
+                account: '',
 				nickName: '',
 				password: '',
 				sex: 1,
@@ -76,28 +92,47 @@
 				age: '',
 				mobilePhone: '',
 				signature: '',
-
+				file: '',
+				icon: '',
 				signinApi: '/api/signin',
+				uploadApi: '/api/image/upload',
 			}
 		},
 		methods: {
-
+            imgUpload(){
+				let inputDom = this.$refs.icon;
+				if(!inputDom.value){	//重置输入为空,  不上传
+					return;
+				}
+				let fileFormData = new FormData();
+				this.file = inputDom.files[0];
+				fileFormData.append('file', this.file, this.file.name);
+				this.$http.post(this.uploadApi, fileFormData).then(res => {
+				    if(res.body.code === 0){
+				        this.icon = '../../static/img/' + res.body.result;
+					}else {
+				        toast('上传失败');
+					}
+				}, err => console.log(err));
+				inputDom.value = '';
+			},
             signin(){
-                let	_this = this,
-					data = {
-					name: _this.userName,
-					nickName: _this.nickName,
-					password: _this.password,
-					sex: _this.sex,
-					age: _this.age,
-					mobilePhone: _this.mobilePhone,
-					signature: _this.signature
+                let data = {
+					account: this.account,
+					nickName: this.nickName,
+					password: this.password,
+					sex: this.sex,
+					age: this.age,
+					mobilePhone: this.mobilePhone,
+					signature: this.signature,
+					icon: this.icon
 				};
-				axios({method: 'post', url: this.signinApi, data: data}).then(res => {
+				/*axios({method: 'post', url: this.signinApi, data: data}).then(res => {
 				    console.log(res);
 				}).catch(err => {
 				    console.log(err);
-				})
+				});*/
+				this.$http.post(this.signinApi, data).then(res => console.log(res), err => console.log(err));
 			},
 			selectSex(index){
                 this.sex = index;
@@ -114,59 +149,7 @@
 	}
 </script>
 <style lang="scss">
-
-	.font18{
-		font-size: 18px;
-	}
-	.p20{
-		padding: 20px;
-	}
-	.pv20{
-		padding: 20px 0;
-	}
-	.ph20{
-		padding: 0 20px;
-	}
-	.pt20{
-		padding-top: 20px;
-	}
-	.pr20{
-		padding-right: 20px;
-	}
-	.pb20{
-		padding-bottom: 20px;
-	}
-	.pl0{
-		padding-left: 0!important;
-	}
-	.pr0{
-		padding-right: 0!important;
-	}
-	.mb20{
-		margin-bottom: 20px;
-	}
-	.mt0{
-		margin-top:0;
-	}
-	.mt20{
-		margin-top: 20px;
-	}
-	.mt30{
-		margin-top: 30px;
-	}
-	.radius0{
-		border-radius: 0!important;
-	}
-	.fontweight0{
-		font-weight: normal;
-	}
-	.bb{
-		border-bottom: 1px solid #e4e4e4;
-	}
-	.bt{
-		border-top: 1px solid #e4e4e4;
-	}
-
+@import "../assets/css/common";
 	.signin{
 		width: 600px;
 	}
@@ -209,18 +192,17 @@
 			}
 		}
 	}
-	.toast {
-		position: fixed;
-		max-width: 80%;
-		left: 50%;
-		top: 60%;
-		transform: translate(-50%, -50%);
-		padding: 6px 12px;
-		border-radius: 4px;
-
-		color: #fff;
-		background-color: rgba(0, 0, 0, 0.7);
-		cursor: pointer;
-		z-index: 10000;
+	.img-owner{
+		width: 100px;
+		height: 100px;
+		position: relative;
+		img{
+			max-width: 100%;
+			max-height: 100%;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
 	}
 </style>

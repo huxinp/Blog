@@ -18,13 +18,15 @@ const router = express.Router();
 const db = require('../db');
 const confirmToken = require('../middlewares/confirmToken.js');
 
+const result = require('../tools/result');
+
 //发布文章
 router.post('/api/article/save', confirmToken, (req, res) => {
 	const article = {
 		topicSid: req.body.topicSid,
-		authorSid: Number,
+		authorSid: req.body.authorSid,
 		title: req.body.title,
-		pictrue: req.body.pictrue,
+		picture: req.body.picture,
 		content: req.body.content,
 		countCommented: 0,
 		countReciated: 0,
@@ -39,7 +41,7 @@ router.post('/api/article/save', confirmToken, (req, res) => {
 	}else if(isPublish === 2){
 		message = '保存到草稿成功.';
 	}
-	res.status(200).send(message);
+	res.status(200).send(result({}, 1, message));
 });
 
 //获取某篇文章
@@ -110,15 +112,15 @@ router.post('/api/article/update', confirmToken, (req, res) => {
 			console.log(err);
 		}else{
 			let article = articleF;
-			article.topicSid = req.body.topicSid,
-			article.title = req.body.title,
-			article.pictrue = req.body.pictrue,
-			article.content = req.body.content
+			article.topicSid = req.body.topicSid;
+			article.title = req.body.title;
+			article.pictrue = req.body.pictrue;
+			article.content = req.body.content;
 			db.Article.update({sid: req.body.sid}, article, (err, data) => {
 				if(err){
 					console.log(err);
 				}else{
-					res.status(200).send('更新文章成功.');
+					res.status(200).send(result({}, 1, '更新文章成功.'));
 				}
 			});
 		}
@@ -140,5 +142,48 @@ router.get('/api/article/search', (req, res) => {//type | keyword | currentPage 
 		});
 	}
 });
+
+//发布文章
+router.post('/api/article/publish',confirmToken, (req, res) => {
+	// console.log(req.headers.authorization);
+	db.User.find({sid: req.body.authorSid}, (err, doc) => {
+		if(err){
+			throw err;
+		}else {
+			if(doc.length){
+				let user = doc[0];
+				user.totalContents++;
+
+				let article = {
+					topicSid: req.body.topicSid,
+					authorSid: req.body.authorSid,
+					title: req.body.title,
+					picture: req.body.picture,
+					content: req.body.content,
+					countCommented: 0,
+					countReciated: 0,
+					countHitted: 0,
+					createdTimestamp: new Date().getTime(),
+					isPublish: req.body.isPublish
+				};
+				db.Article(article).save((err, doc) => {
+					if(err){
+						throw err;
+					}else {
+						db.User.update({_id: user._id}, user, err => {
+							if(err){
+								throw err;
+							}
+						});
+						res.status(200).send(result(doc, 1, '发布成功'));
+					}
+				});
+			}else {
+				res.status(200).send(result({}, 2, '用户不存在'));
+			}
+		}
+	})
+});
+
 
 module.exports = router;

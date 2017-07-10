@@ -16,7 +16,8 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<button class="btn btn-info text-align" @click="login">登录</button>
+					<span class="btn btn-info text-align" @click="login({account, password})">登录</span>
+					<!--<span class="btn btn-info text-align" @click="loginFn">登录</span>-->
 				</div>
 			</form>
 		</div>
@@ -26,12 +27,13 @@
 <script type="text/ecmascript-6">
 	import axios from 'axios';
 //	axios.defaults.headers.post['content-Type'] = 'appliction/x-www-form-urlencoded';
+	import {mapActions} from 'vuex';
 	export default {
 		data(){
 			return {
 				account: '',
 				password: '',
-				loginApi: 'api/login',
+				loginApi: '/api/login',
 			}
 		},
 		prop: {
@@ -41,8 +43,12 @@
 
 		},
 		methods: {
-		    login(){
-				axios.post("/api/login", {name: this.account, password: this.password}).then(res => {
+			...mapActions([
+			    'login'
+			]),
+		    loginFn(){
+			    this.login({account: this.account, password: this.password});
+				axios.post(this.loginApi, {account: this.account, password: this.password}).then(res => {
 				    console.log(res);
 				}).catch(err => console.log(err));
 //				this.$http.post(this.loginApi, {name: this.account, password: this.password}).then(res => console.log(res), err => console.log(err))
@@ -51,6 +57,7 @@
 	}
 </script>
 <style lang='scss'>
+@import "../assets/css/common";
 .login{
 	width: 500px;
 }

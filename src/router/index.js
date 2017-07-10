@@ -3,25 +3,36 @@ import Router from 'vue-router';
 import Hello from '@/components/Hello';
 import Login from '@/components/Login';
 import Signin from '@/components/Signin';
+import NewArticle from '@/components/NewArticle';
 
 Vue.use(Router);
 
 export default new Router({
     routes: [
-	    {
+/*	    {
 	        path: '/',
 	        name: 'Hello',
 	        component: Hello
-	    },
-	    {
-	    	path: '/login',
-	    	name: 'Login',
-	    	component: Login
-	    },
+	    },*/
+		{
+			path: '/',
+			name: 'Login',
+			component: Login
+		},
+		{
+			path: '/login',
+			name: 'Login',
+			component: Login
+		},
 		{
 			path: '/signin',
 			name: 'Signin',
 			component: Signin
+		},
+		{
+			path: '/newArticle',
+			name: 'NewArticle',
+			component: NewArticle
 		}
     ]
 });
