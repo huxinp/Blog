@@ -4,6 +4,7 @@ import Hello from '@/components/Hello';
 import Login from '@/components/Login';
 import Signin from '@/components/Signin';
 import NewArticle from '@/components/NewArticle';
+import Main from '@/components/Main';
 
 Vue.use(Router);
 
@@ -33,6 +34,11 @@ export default new Router({
 			path: '/newArticle',
 			name: 'NewArticle',
 			component: NewArticle
-		}
+		},
+		{
+			path: '/main',
+			name: 'Main',
+			component: Main
+		},
     ]
 });

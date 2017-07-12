@@ -23,8 +23,11 @@ module.exports = UserSchema = new Schema(
 		bgPicture: String,			//背景图片
 		signature: String, 			//签名
 		birthday: Date,				//生日
-		userLevelSid: Number,		//用户等级sid
-		userVFlagSid: Number,		//用户标识sid
+		userLevelSid: {
+			type: Schema.Types.ObjectId,
+			ref: 'UserLevel'
+		},		//用户等级sid
+		// userVFlagSid: Number,		//用户标识sid
 		countFollowers: Number,		//关注我的人数
 		countUsersBeFllo: Number, 	//我关注的人数
 		countMainPageBe: Number, 	//主页被访问次数

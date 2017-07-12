@@ -8,10 +8,19 @@ const generateSerialNumber = require('./generateSerialNumber.js');
 module.exports = ContentRefSchema = new Schema(
 	{
 		sid: Number,					//记录流水号
-		contentSid: Number,				//内容sid
+		contentSid: {					//内容sid
+			type: Schema.Types.ObjectId,
+			ref: 'Article'
+		},
 		type: String,					//类别
-		targetSid: Number,				//目标对象sid
-		targetUserSid: Number,			//todo  ===>
+		targetSid: {					//目标对象sid
+			type: Schema.Types.ObjectId,
+			ref: 'Article'
+		},
+		targetUserSid: {				//todo  ===>
+			type: Schema.Types.ObjectId,
+			ref: 'User'
+		},
 		title: String,					//标题
 		picture: String,				//图片
 		uri: String,					//目标uri
@@ -22,11 +31,11 @@ module.exports = ContentRefSchema = new Schema(
 	{ versionKey: false }
 );
 
-ContentRefSchema.pre('save', next => {
+ContentRefSchema.pre('save', function(next){
 	if(this.isNew){
 		generateSerialNumber('ContentRef', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else {
 				this.sid = result.value.seq;
 				next();

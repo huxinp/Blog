@@ -7,7 +7,10 @@ const generateSerialNumber = require('./generateSerialNumber.js');
 
 module.exports = ScoreSchema = new Schema(
 	{
-		sid: Number,					//用户流水号
+		sid: {							//用户流水号
+			type: Schema.Types.ObjectId,
+			ref: 'User'
+		},
 		score: Number,					//当前积分值
 		lastSigninTimestamp: Number,	//上次签到时间
 		lastLoginTimestamp: Number,		//最近一次登录获得积分时间
@@ -17,11 +20,11 @@ module.exports = ScoreSchema = new Schema(
 	{ versionKey: false }
 );
 
-ScoreSchema.pre('save', next => {
+ScoreSchema.pre('save', function(next){
 	if(this.isNew){
 		generateSerialNumber('Score', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else{
 				this.sid = result.value.seq;
 				next();

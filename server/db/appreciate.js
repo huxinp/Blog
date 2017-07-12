@@ -8,18 +8,24 @@ const generateSerialNumber = require('./generateSerialNumber.js');
 module.exports = ReciateSchema = new Schema(
 	{
 		sid: Number,
-		contentSid: Number,
-		userSid: Number,			//点赞人
+		contentSid: {
+			type: Schema.Types.ObjectId,
+			ref: 'Article'
+		},
+		userSid: {
+			type: Schema.Types.ObjectId,
+			ref: 'User'
+		},			//点赞人
 		createdTimestamp: Number	//点赞时间戳
 	},
 	{ versionKey: false }
 );
 
-ReciateSchema.pre('save', next => {
+ReciateSchema.pre('save', function(next){
 	if(this.isNew){
 		generateSerialNumber('Reciate', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else{
 				this.sid = result.value.seq;
 				next();

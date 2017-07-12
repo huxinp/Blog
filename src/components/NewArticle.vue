@@ -30,12 +30,10 @@
 <script type="text/ecmascript-6">
 	import axios from 'axios';
 	import {toast} from '../assets/js/common';
+	import {mapActions, mapGetters} from 'vuex';
     export default {
         data(){
             return {
-                user: {
-                    sid: 100017
-				},
                 title: '',
 				content: '',
 				topicSid: '',
@@ -60,6 +58,9 @@
 			});
 		},
 		methods: {
+			...mapActions([
+				'publishArticle'
+			]),
             publish(status){
                 let data = {
                     title: this.title,
@@ -68,17 +69,19 @@
 					authorSid: this.user.sid,
 					isPublish: status
 				};
-                let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5NTVjNjAyZmQwZGIxY2NhMTcwYTAwOCIsImFjY291bnQiOiI3NTI2NTY1MjBAcXEuY29tIiwiaWF0IjoxNDk5NjcxMDg3LCJleHAiOjE1MDAyNzU4ODd9.tYP6pko7Wgr9eDkIp8arbU4g34WNFubQqfGbF3l4QB0";
-//                this.$http.post(this.publishUrl, data).then(res => console.log(res), err => console.log(err));
-				axios.defaults.headers.common["Authorization"] =  'token ' + token;
-				axios.post(this.publishUrl, data).then(res => {
-					console.log(res);
-				}).catch(err => console.log(err));
+//				axios.defaults.headers.common["Authorization"] =  'token ' + this.token;
+                this.publishArticle(data);
 			},
 			selectBtn(topic){
                 this.topic = topic;
                 this.selecting = false;
 			},
+		},
+		computed: {
+			...mapGetters([
+			    'user',
+				'token'
+			])
 		}
 	}
 </script>

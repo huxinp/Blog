@@ -16,11 +16,11 @@ module.exports = ScoreRuleSchema = new Schema(
 	{ versionKey: false }
 );
 
-ScoreRuleSchema.pre('save', next => {
+ScoreRuleSchema.pre('save', function(next){
 	if(this.isNew){
 		generateSerialNumber('ScoreRule', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else {
 				this.sid = result.value.seq;
 				next();

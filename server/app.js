@@ -16,5 +16,5 @@ app.use(bodyParser.json());
 route(app);
 
 app.listen(app.get('port'), () => {
-	console.log('GetData http://localhost:' + app.get('port'));
+	console.log('GetData http://127.0.0.1:' + app.get('port'));
 });

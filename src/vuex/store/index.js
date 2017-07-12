@@ -8,8 +8,10 @@ import mutations from '../mutations';
 Vue.use(Vuex);
 
 const state = {
-	token: '123456789',
+	token: '',
 	user: {},
+	articleList: [],
+	pagination: {},
 };
 
 export default new Vuex.Store({

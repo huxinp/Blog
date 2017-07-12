@@ -18,27 +18,28 @@ const createToken = (id, account) => {
 
 //登录
 router.post('/api/login', (req, res) => {
+	console.log(req.body);
 	if(!req.body.account || !req.body.password){
+		console.log('用户名或密码不能为空');
 		res.status(200).send(result({}, 2, '用户名或密码不能为空'));
 	}else {
 		db.User.findOne({account: req.body.account}, (err, doc) => {
 			if (err) {
 				throw err;
 			} else if (doc) {
+				console.log(doc);
 				const salt = doc.salt;
 				if (doc.password === sha1(req.body.password + salt)) {
 					const token = createToken(doc._id, doc.account);
+					console.log('登陆成功');
 					res.status(200).send(result({
-						id: doc._id,
-						account: doc.account,
-						nickName: doc.nickName,
+						user: doc,
 						token: token
 					}, 0, '登陆成功'));
 				} else {
-					res.status(401).end();
+					console.log('用户名或密码不正确');
+					res.status(200).send(result({}, 1, '用户名或密码不正确'));
 				}
-			} else {
-				res.status(200).send(result({}, 1, '用户名或密码不正确'));
 			}
 		});
 	}

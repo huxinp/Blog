@@ -22,7 +22,7 @@ UserLevelSchema.pre('save', next => {
 	if(this.isNew){
 		generateSerialNumber('UserLevel', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else {
 				this.sid = result.value.seq;
 				next();

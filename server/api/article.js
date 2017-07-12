@@ -13,6 +13,8 @@
 		isPublish: Number			//1 发布		2 草稿		3 已删除
 	}
 */
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
@@ -22,6 +24,7 @@ const result = require('../tools/result');
 
 //发布文章
 router.post('/api/article/save', confirmToken, (req, res) => {
+	console.log(req.body);
 	const article = {
 		topicSid: req.body.topicSid,
 		authorSid: req.body.authorSid,
@@ -41,7 +44,8 @@ router.post('/api/article/save', confirmToken, (req, res) => {
 	}else if(isPublish === 2){
 		message = '保存到草稿成功.';
 	}
-	res.status(200).send(result({}, 1, message));
+	console.log(message);
+	res.status(200).send(result({}, 0, message));
 });
 
 //获取某篇文章
@@ -64,6 +68,7 @@ router.get('/api/article/content/:sid', (req, res) => {
 
 //删除文章并删除文章的评论
 router.post('/api/article/delete', confirmToken, (req, res) => {
+	console.log(req.body);
 	/*db.Article.remove({sid: req.body.sid}, (err, data) => {
 		if(err){
 			console.log(err);
@@ -80,7 +85,7 @@ router.post('/api/article/delete', confirmToken, (req, res) => {
 	let article;
 	db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
 		if(err){
-			console.log(err);
+			throw err;
 		}else{
 			article = articleF;
 			article.isPublish = 0;
@@ -93,9 +98,10 @@ router.post('/api/article/delete', confirmToken, (req, res) => {
 						comment.isPublish = 0;
 						db.Comment.update({articleId: req.body.sid}, comment, (err, data) => {
 							if(err){
-								console.log(err);
+								throw err;
 							}else{
-								res.status(200).send('删除成功.');
+								console.log('删除成功.');
+								res.status(200).send(result({}, 0, '删除成功.'));
 							}
 						});
 					});
@@ -107,9 +113,10 @@ router.post('/api/article/delete', confirmToken, (req, res) => {
 
 //更新文章
 router.post('/api/article/update', confirmToken, (req, res) => {
+	console.log(req.body);
 	db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
 		if(err){
-			console.log(err);
+			throw err;
 		}else{
 			let article = articleF;
 			article.topicSid = req.body.topicSid;
@@ -118,9 +125,10 @@ router.post('/api/article/update', confirmToken, (req, res) => {
 			article.content = req.body.content;
 			db.Article.update({sid: req.body.sid}, article, (err, data) => {
 				if(err){
-					console.log(err);
+					throw err;
 				}else{
-					res.status(200).send(result({}, 1, '更新文章成功.'));
+					console.log('更新文章成功');
+					res.status(200).send(result({}, 0, '更新文章成功.'));
 				}
 			});
 		}
@@ -145,7 +153,7 @@ router.get('/api/article/search', (req, res) => {//type | keyword | currentPage 
 
 //发布文章
 router.post('/api/article/publish',confirmToken, (req, res) => {
-	// console.log(req.headers.authorization);
+	console.log(req.body);
 	db.User.find({sid: req.body.authorSid}, (err, doc) => {
 		if(err){
 			throw err;
@@ -175,15 +183,38 @@ router.post('/api/article/publish',confirmToken, (req, res) => {
 								throw err;
 							}
 						});
+						console.log('发布成功');
 						res.status(200).send(result(doc, 1, '发布成功'));
 					}
 				});
 			}else {
+				console.log('用户不存在');
 				res.status(200).send(result({}, 2, '用户不存在'));
 			}
 		}
 	})
 });
 
+//获取最新文章
+router.get('/api/article/fresh', (req, res) => {
+	console.log(req.query);
+	let limit = req.query.pageSize - 0 || 5,
+		currentPage = req.query.currentPage - 0 || 1,
+		skip = limit * (currentPage - 1);
+	db.Article.find({isPublish: 1}).sort({createdTimestamp: -1}).limit(limit).skip(skip).populate([
+		{path: 'authorSid', select: 'sid nickName icon -_id'},
+		{path: 'topicSid', select: 'sid name -_id'}
+	]).exec().then(doc => {
+		let r = {
+			data: doc,
+			pagination: {
+				pageSize: limit,
+				currentPage: currentPage
+			}
+		};
+		res.status(200).send(result(r, 0, '操作成功'));
+
+	})
+});
 
 module.exports = router;

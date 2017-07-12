@@ -8,13 +8,19 @@ const generateSerialNumber = require('./generateSerialNumber.js');
 module.exports = ArticleSchema = new Schema(
 	{
 		sid: Number,				//记录流水号
-		topicSid: Number,			//话题sid
-		authorSid: Number,			//作者
+		topicSid: {					//话题sid
+			type: Schema.Types.ObjectId,
+			ref: 'Topic'
+		},
+		authorSid: {				//作者
+			type: Schema.Types.ObjectId,
+			ref: 'User'
+		},
 		title: String,				//标题
 		picture: String,			//预览图把
 		content: String,			//内容文本
 		countCommented: Number,		//被评论次数
-		countReciated: Number,	//被点赞次数
+		countReciated: Number,		//被点赞次数
 		countHitted: Number,		//被点击（阅读）
 		createdTimestamp: Date,		//创建时间戳
 		isPublish: Number			//1 发布		2 草稿		3 已删除
@@ -24,11 +30,11 @@ module.exports = ArticleSchema = new Schema(
 
 //生成自增长的sid
 
-ArticleSchema.pre('save', next => {
+ArticleSchema.pre('save', function(next){
 	if(this.isNew){
 		generateSerialNumber('Article', (err, result) => {
 			if(err){
-				console.log(err);
+				throw err;
 			}else{
 				this.sid = result.value.seq;
 				next();

@@ -9,33 +9,36 @@ const result = require('../tools/result');
 
 //添加话题
 router.post('/api/topic/publish', (req, res) => {
-	if(req.body.name){
-		next();
-	}
-	db.Topic.find({name: req.body.name}, (err, doc) => {
-		if(err){
-			throw err;
-		}else if(doc){
-			if(doc.length === 0){//无重复
-				let topic = {
-					name: req.body.name,
-					icon: req.body.icon,
-					picture: req.body.picture,
-					descr: req.body.descr,
-					countContents: 0
-				};
-				new db.Topic(topic).save((err, doc) => {
-					if(err){
-						throw err;
-					}else if(doc){
-						res.status(200).send(result(doc, 0, '添加成功'));
-					}
-				})
-			}else {//有重复
-				res.status(200).send(result({}, 1, '该话题已存在'));
+	console.log(req.body);
+	if(req.body.name) {
+		db.Topic.find({name: req.body.name}, (err, doc) => {
+			if (err) {
+				throw err;
+			} else if (doc) {
+				if (doc.length === 0) {//无重复
+					let topic = {
+						name: req.body.name,
+						icon: req.body.icon,
+						picture: req.body.picture,
+						descr: req.body.descr,
+						countContents: 0
+					};
+					new db.Topic(topic).save((err, doc) => {
+						if (err) {
+							throw err;
+						} else if (doc) {
+							console.log(doc);
+							res.status(200).send(result(doc, 0, '添加成功'));
+						}
+					})
+				} else {//有重复
+					res.status(200).send(result({}, 1, '该话题已存在'));
+				}
 			}
-		}
-	})
+		});
+	}else{
+		res.status(200).send(result({}, 2, '话题名不能为空'))
+	}
 });
 
 //获取话题列表

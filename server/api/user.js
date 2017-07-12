@@ -35,6 +35,7 @@ const result = require('../tools/result');
 
 //修改账户
 router.post('/api/user/update', confirmToken, (req, res) => {
+	console.log(req.body);
 	const salt = rand(160, 36);
 	const user = {
 		sid: sid,
@@ -56,21 +57,30 @@ router.post('/api/user/update', confirmToken, (req, res) => {
 
 //注册账户
 router.post('/api/signin', (req, res) => {
+	console.log(req.body);
 	if(!req.body.account){
+		console.log('姓名不能为空');
 		res.status(200).send(result({}, 2, '姓名不能为空'));
 	}else if(req.body.account.length < 2 || !req.body.account.replace(/' '/g, '')){
+		console.log('姓名不对吧');
 		res.status(200).send(result({}, 3, '姓名不对吧'));
 	}else if(!req.body.nickName){
+		console.log('昵称不能为空');
 		res.status(200).send(result({}, 4, '昵称不能为空'));
 	}else if(req.body.nickName.length < 2 || !req.body.nickName.replace(/' '/g, '')){
+		console.log('昵称最少2个字符');
 		res.status(200).send(result({}, 5, '昵称最少2个字符'));
 	}else if(!req.body.nickName && req.body.nickName !== 0){
+		console.log('电话号码不能为空');
 		res.status(200).send(result({}, 6, '电话号码不能为空'));
 	}else if(!(/^1[3|4|5|7|8][0-9]\d{4,8}$/.test(req.body.mobilePhone))){
+		console.log('请输入正确的号码');
 		res.status(200).send(result({}, 7, '请输入正确的号码'));
 	}else if(req.body.password.length < 6){
+		console.log('密码不合法');
 		res.status(200).send(result({}, 8, '密码不合法'));
 	}else if(!req.body.icon){
+		console.log('请上传头像');
 		res.status(200).send(result({}, 9, '请上传头像'));
 	}else{
 		//查询账号和昵称是否有重复
@@ -84,8 +94,8 @@ router.post('/api/signin', (req, res) => {
 				throw err;
 			}else if(doc){
 				//账号或昵称有重复
-				console.log(doc);
-				if(doc.length === 0){
+				// console.log(doc);
+				if(doc.length === 0){//没有查询到
 					let salt = rand(160, 36),
 						user = {
 						account: req.body.account,					//账号
@@ -113,10 +123,12 @@ router.post('/api/signin', (req, res) => {
 						if (err) {
 							throw err;
 						} else {
+							console.log('注册成功');
 							res.status(200).send(result(doc, 0, '注册成功'));
 						}
 					});
 				}else {
+					console.log('账号或昵称已存在');
 					res.status(200).send(result({}, 1, '账号或昵称已存在'));
 				}
 			}
