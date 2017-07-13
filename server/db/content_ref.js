@@ -3,21 +3,21 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generateSerialNumber = require('./generateSerialNumber.js');
+const generateSerialNumber = require('../handle/generateSerialNumber');
 
 module.exports = ContentRefSchema = new Schema(
 	{
 		sid: Number,					//记录流水号
-		contentSid: {					//内容sid
+		content: {					//内容sid
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
 		type: String,					//类别
-		targetSid: {					//目标对象sid
+		target: {					//目标对象sid
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
-		targetUserSid: {				//todo  ===>
+		targetUser: {				//todo  ===>
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
@@ -37,7 +37,7 @@ ContentRefSchema.pre('save', function(next){
 			if(err){
 				throw err;
 			}else {
-				this.sid = result.value.seq;
+				this.sid = result.seq;
 				next();
 			}
 		});

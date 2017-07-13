@@ -6,9 +6,11 @@
 * */
 
 module.exports = (result, code, message) => {
-	return {
+	let data = {
 		code: code,
 		message: message,
 		result: result
-	}
+	};
+	console.log('res: ' + JSON.stringify(data));
+	return data;
 };

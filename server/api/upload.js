@@ -6,7 +6,6 @@ const router = express.Router();
 const fs = require('fs');
 const multiparty = require('multiparty');
 
-const db = require('../db');
 const result = require('../tools/result');
 
 const winPath = 'H:/myGithub/Blog/src/assets/files/';
@@ -28,11 +27,8 @@ router.post('/api/image/upload', (req, res) => {
 	form.uploadDir = path;
 	form.parse(req, (err, fields, files) => {
 		if(err){
-			console.log(err);
 			throw err;
 		}
-		// console.log(fields);
-		// console.log(files);
 		fs.renameSync(files.file[0].path, path + files.file[0].originalFilename);
 		res.status(200).send(result(files.file[0].originalFilename, 0, '上传成功'));
 	});

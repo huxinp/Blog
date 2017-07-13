@@ -94,6 +94,9 @@ export const cookie = {
 	},
 	setCookie: (name, value, expires) =>{
 		//expires 过期时间	为负 则是删除    不传就取默认值7天
+		if(typeof value === 'object'){
+			value = JSON.stringify(value);
+		}
 		let Days, exp = new Date();
 		if(expires){
 			Days = expires;

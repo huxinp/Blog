@@ -3,16 +3,16 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generateSerialNumber = require('./generateSerialNumber.js');
+const generateSerialNumber = require('../handle/generateSerialNumber');
 
 module.exports = UserFavoriteSchema = new Schema(
 	{
 		sid: Number,				//记录流水号
-		contentSid: {				//内容ID
+		content: {					//内容_id
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
-		userSid: {	 				//收藏人
+		user: {	 					//收藏人_id
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
@@ -29,7 +29,7 @@ UserFavoriteSchema.pre('save', function(next){
 			if(err){
 				throw err;
 			}else {
-				this.sid = result.value.seq;
+				this.sid = result.seq;
 				next();
 			}
 		});

@@ -65,8 +65,8 @@
                 let data = {
                     title: this.title,
 					content: this.content,
-					topicSid: this.topic.sid,
-					authorSid: this.user.sid,
+					topicId: this.topic._id,
+					authorId: this.user._id,
 					isPublish: status
 				};
 //				axios.defaults.headers.common["Authorization"] =  'token ' + this.token;

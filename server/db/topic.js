@@ -3,7 +3,7 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generateSerialNumber = require('./generateSerialNumber.js');
+const generateSerialNumber = require('../handle/generateSerialNumber');
 
 module.exports = TopicSchema = new Schema(
 	{

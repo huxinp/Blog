@@ -3,7 +3,7 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generateSerialNumber = require('./generateSerialNumber.js');
+const generateSerialNumber = require('../handle/generateSerialNumber');
 
 module.exports = ScoreSchema = new Schema(
 	{
@@ -26,7 +26,7 @@ ScoreSchema.pre('save', function(next){
 			if(err){
 				throw err;
 			}else{
-				this.sid = result.value.seq;
+				this.sid = result.seq;
 				next();
 			}
 		});

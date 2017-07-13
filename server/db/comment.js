@@ -3,27 +3,27 @@
 **/
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const generateSerialNumber = require('./generateSerialNumber.js');
+const generateSerialNumber = require('../handle/generateSerialNumber');
 
 module.exports = CommentSchema = new Schema(
 	{
 		sid: Number,
-		contentSid: {
+		content: {						//内容_id
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
-		userSid: {						//评论人
+		user: {						//评论人_id
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
 		comment: String,
 		picture: String,
 		countAppreciated: Number,		//评论被赞次数
-		lastSid: {						//被回复评论sid
+		last: {							//被回复评论_id
 			type: Schema.Types.ObjectId,
 			ref: 'Comment'
 		},
-		lastUserSid: {					//被回复评论人
+		lastUser: {						//被回复评论人_id
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
@@ -41,7 +41,7 @@ CommentSchema.pre('save', function(next){
 			if(err){
 				throw err;
 			}else {
-				this.sid = result.value.seq;
+				this.sid = result.seq;
 				next();
 			}
 		});

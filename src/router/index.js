@@ -4,7 +4,7 @@ import Hello from '@/components/Hello';
 import Login from '@/components/Login';
 import Signin from '@/components/Signin';
 import NewArticle from '@/components/NewArticle';
-import Main from '@/components/Main';
+import HomePage from '@/components/HomePage';
 
 Vue.use(Router);
 
@@ -37,8 +37,8 @@ export default new Router({
 		},
 		{
 			path: '/main',
-			name: 'Main',
-			component: Main
+			name: 'HomePage',
+			component: HomePage
 		},
     ]
 });
