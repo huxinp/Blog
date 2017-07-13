@@ -17,7 +17,7 @@
 		},
 		methods: {
 	        newArticle(){
-	            router.push('newArticle');
+	            router.push('/homepage/new');
 			}
 		}
 	}

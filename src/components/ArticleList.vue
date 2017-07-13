@@ -4,7 +4,7 @@
 		padding: 10px;
 	}
 	.item{
-		margin: 0 10px 20px;
+		margin-bottom: 20px;
 		background-color: #fff;
 	}
 	.article-author{
@@ -27,6 +27,10 @@
 			font-size: 12px;
 		}
 	}
+	.article-title{
+		font-weight: bold;
+		padding: 10px 20px 0;
+	}
 	.article-content{
 		padding: 10px;
 	}
@@ -46,6 +50,8 @@
 	.article-control{
 		clear: both;
 		overflow: hidden;
+		font-size: 12px;
+		padding: 5px;
 		>div{
 			float: left;
 			margin-right: 20px;
@@ -65,6 +71,9 @@
 						<div class="create-time">{{item.createdTimestamp}}</div>
 					</div>
 				</div>
+				<div class="article-title">
+					{{item.title}}
+				</div>
 				<div class="article-content" v-if="item.content">
 					{{item.content}}
 				</div>
@@ -74,7 +83,7 @@
 					</div>
 				</div>
 				<div class="article-control">
-					<div class="topic">#{{item.topic.name}}#</div>
+					<div class="topic" v-if="item.topic">#{{item.topic.name}}#</div>
 					<div class="received">赞</div>
 					<div class="favorite">收藏</div>
 				</div>
@@ -94,7 +103,6 @@
 		},
 		created(){
 	        this.getArticles(1);
-//	        this.getFreshArticle({pageSize: 5, currentPage: 1});
 		},
 		methods: {
 			...mapActions([

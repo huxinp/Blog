@@ -1,5 +1,5 @@
 <template>
-	<div class="new-article container">
+	<div class="new-article">
 		<div class="form-group">
 			<label for="title" class="col-sm-2 col-md-2 control-label text-left">标题:</label>
 			<input type="text" id="title" class="ml15 title form-control" v-model="title" />
@@ -87,6 +87,10 @@
 </script>
 <style lang="scss">
 	@import "../assets/css/common";
+	.new-article{
+		width: 600px;
+		padding: 10px;
+	}
 	.select-btns{
 		position: relative;
 		.caret{

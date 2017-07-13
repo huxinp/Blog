@@ -117,38 +117,42 @@ router.get('/api/article/search', (req, res) => {//type | keyword | currentPage 
 
 //发布文章
 router.post('/api/article/publish',logReqArguments ,confirmToken, (req, res) => {
-	find('User', 'find', {_id: req.body.authorId}, doc => {
-		if(doc.length){
-			let user = doc[0];
-			user.totalContents++;
+	if(req.body.title && req.body.title.replace(/' '/g, '')){
+		find('User', 'find', {_id: req.body.authorId}, doc => {
+			if(doc.length){
+				let user = doc[0];
+				user.totalContents++;
 
-			let article = {
-				topic: req.body.topicId,
-				author: req.body.authorId,
-				title: req.body.title,
-				picture: req.body.picture,
-				content: req.body.content,
-				countCommented: 0,
-				countReciated: 0,
-				countHitted: 0,
-				createdTimestamp: new Date().getTime(),
-				isPublish: req.body.isPublish
-			};
-			save('Article', article, doc_article => {
-				update('User', {_id: user._id}, user, doc_user => {
-					let message;
-					if(req.body.isPublish === 1){
-						message = '发布文章成功.';
-					}else if(req.body.isPublish === 2){
-						message = '保存到草稿成功.';
-					}
-					res.status(200).send(result({}, 0, message));
+				let article = {
+					topic: req.body.topicId,
+					author: req.body.authorId,
+					title: req.body.title,
+					picture: req.body.picture,
+					content: req.body.content,
+					countCommented: 0,
+					countReciated: 0,
+					countHitted: 0,
+					createdTimestamp: new Date().getTime(),
+					isPublish: req.body.isPublish
+				};
+				save('Article', article, doc_article => {
+					update('User', {_id: user._id}, user, doc_user => {
+						let message;
+						if(req.body.isPublish === 1){
+							message = '发布文章成功.';
+						}else if(req.body.isPublish === 2){
+							message = '保存到草稿成功.';
+						}
+						res.status(200).send(result({}, 0, message));
+					});
 				});
-			});
-		}else{
-			res.status(200).send(result({}, 2, '用户不存在'));
-		}
-	});
+			}else{
+				res.status(200).send(result({}, 1, '用户不存在'));
+			}
+		});
+	}else{
+		res.status(200).send(result({}, 2, '标题不能为空'))
+	}
 });
 
 //获取最新文章

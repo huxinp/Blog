@@ -5,6 +5,7 @@ import Login from '@/components/Login';
 import Signin from '@/components/Signin';
 import NewArticle from '@/components/NewArticle';
 import HomePage from '@/components/HomePage';
+import ArticleList from '@/components/ArticleList';
 
 Vue.use(Router);
 
@@ -16,11 +17,6 @@ export default new Router({
 	        component: Hello
 	    },*/
 		{
-			path: '/',
-			name: 'Login',
-			component: Login
-		},
-		{
 			path: '/login',
 			name: 'Login',
 			component: Login
@@ -31,14 +27,21 @@ export default new Router({
 			component: Signin
 		},
 		{
-			path: '/newArticle',
-			name: 'NewArticle',
-			component: NewArticle
-		},
-		{
-			path: '/main',
+			path: '/homepage',
 			name: 'HomePage',
-			component: HomePage
+			component: HomePage,
+			children: [
+				{
+					path: '',
+					name: 'List',
+					component: ArticleList
+				},
+				{
+					path: 'new',
+					name: 'NewArticle',
+					component: NewArticle
+				}
+			]
 		},
     ]
 });

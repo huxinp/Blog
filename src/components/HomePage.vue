@@ -7,7 +7,8 @@
 				<Side-bar />
 			</div>
 			<div class="center">
-				<Article-list />
+				<router-view></router-view>
+				<!--<Article-list />-->
 			</div>
 			<div class="right">
 				<Sub-side-bar />

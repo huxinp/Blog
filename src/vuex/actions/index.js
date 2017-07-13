@@ -9,7 +9,7 @@ export default {
 	login({commit}, payload){
 		axios.post("/api/login", payload).then(res => {
 			if(res.data.code === 0){
-				router.push('Main');
+				router.push('homepage');
 				commit('LOGIN', res.data.result);
 			}else{
 				console.log(res.data);
