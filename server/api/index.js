@@ -3,6 +3,7 @@ const login = require('./login');
 const user = require('./user');
 const upload = require('./upload');
 const topic = require('./topic');
+const favorite = require('./favorite');
 
 module.exports = app => {
 	app.use(article);
@@ -10,4 +11,5 @@ module.exports = app => {
 	app.use(user);
 	app.use(upload);
 	app.use(topic);
+	app.use(favorite);
 };

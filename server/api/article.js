@@ -2,7 +2,7 @@ const Promise = require('bluebird');
 
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+// const db = require('../db');
 const confirmToken = require('../middlewares/confirmToken');
 const logReqArguments = require('../middlewares/logReqArguments');
 
@@ -13,24 +13,6 @@ const find = handle.find;
 const update = handle.update;
 const save = handle.save;
 
-
-//获取某篇文章
-router.get('/api/article/content/:sid', (req, res) => {
-	db.Article.findOne({sid: req.params.sid}, (err, article) => {
-		if(err){
-			throw err;
-		}else{
-			if(article.isPublish === 1){
-				article.countHitted++;//点击(阅读)次数
-				res.status(200).send(article);
-			}else if(article.isPublish === 2){
-				res.status(200).send(article);
-			}else{
-				res.status(200).send('文章不存在.');
-			}
-		}
-	});
-});
 
 //删除文章并删除文章的评论
 router.post('/api/article/delete', logReqArguments, confirmToken, (req, res) => {
@@ -50,7 +32,20 @@ router.post('/api/article/delete', logReqArguments, confirmToken, (req, res) => 
 	});
 */
 	let article;
-	db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
+	find('Article', 'findOne', {sid: req.body.sid}, articleF => {
+		article = articleF;
+		article.isPublish = 0;
+		update('Article', {sid: req.body.sid}, article, data => {
+			find('Comment', 'findOne', {articleId: req.body.sid}, commentF => {
+				let comment = commentF;
+				comment.isPublish = 0;
+				update('Comment', {articleId: req.body.sid}, comment, data => {
+					res.status(200).send(result({}, 0, '删除成功'));
+				});
+			});
+		});
+	});
+	/*db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
 		if(err){
 			throw err;
 		}else{
@@ -74,12 +69,22 @@ router.post('/api/article/delete', logReqArguments, confirmToken, (req, res) => 
 				}
 			});
 		}
-	});
+	});*/
 });
 
 //更新文章
 router.post('/api/article/update', logReqArguments, confirmToken, (req, res) => {
-	db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
+	find('Article', 'findOne', {sid: req.body.sid}, articleF => {
+		let article = articleF;
+		article.topic = req.body.topicSid;
+		article.title = req.body.title;
+		article.pictrue = req.body.pictrue;
+		article.content = req.body.content;
+		update('Article',{sid: req.body.sid}, article, data => {
+			res.status(200).send(result({}, 0, '更新文章成功'));
+		});
+	});
+	/*db.Article.findOne({sid: req.body.sid}, (err, articleF) => {
 		if(err){
 			throw err;
 		}else{
@@ -96,27 +101,33 @@ router.post('/api/article/update', logReqArguments, confirmToken, (req, res) => 
 				}
 			});
 		}
-	});
+	});*/
 });
 
 //搜索
-router.get('/api/article/search', (req, res) => {//type | keyword | currentPage | pageSize
+router.get('/api/article/search', logReqArguments, (req, res) => {//type | keyword | currentPage | pageSize
 	let currentPage = req.query.currentPage,
 		limit = req.query.pageSize - 0 || 10,
 		skip = limit * (currentPage - 1);
 	if(req.query.type === 'nickName'){
-		db.Article.find({nickName: req.query.keyword, isPublish: 1}).sort({date: -1}).limit(limit).skip(skip).exec().then(articles => {
-			res.send(articles);
+		queryList(currentPage, limit, {nickName: req.query.keyword, isPublish: 1}, {date: -1}, '', 'Article', articles => {
+			res.status(200).send(result({}, 0, '操作成功'));
 		});
+		/*db.Article.find({nickName: req.query.keyword, isPublish: 1}).sort({date: -1}).limit(limit).skip(skip).exec().then(articles => {
+			res.send(articles);
+		});*/
 	}else if(req.query.type === 'title'){
-		db.Article.find({title: req.query.keyword, isPublish: 1}).sort({date: -1}).limit(limit).skip(skip).exec().then(articles => {
-			res.send(articles);
+		queryList(currentPage, limit, {title: req.query.keyword, isPublish: 1}, {date: -1}, '', 'Article', articles => {
+			res.status(200).send(result({}, 0, '操作成功'));
 		});
+		/*db.Article.find({title: req.query.keyword, isPublish: 1}).sort({date: -1}).limit(limit).skip(skip).exec().then(articles => {
+			res.send(articles);
+		});*/
 	}
 });
 
 //发布文章
-router.post('/api/article/publish',logReqArguments ,confirmToken, (req, res) => {
+router.post('/api/article/publish', logReqArguments, confirmToken, (req, res) => {
 	if(req.body.title && req.body.title.replace(/' '/g, '')){
 		find('User', 'find', {_id: req.body.authorId}, doc => {
 			if(doc.length){
@@ -156,16 +167,75 @@ router.post('/api/article/publish',logReqArguments ,confirmToken, (req, res) => 
 });
 
 //获取最新文章
-router.get('/api/article/fresh',logReqArguments, (req, res) => {
+router.get('/api/article/fresh', logReqArguments, (req, res) => {
 	let limit = req.query.pageSize - 0 || 5,
 		currentPage = req.query.currentPage - 0 || 1,
 		skip = limit * (currentPage - 1);
-	queryList(currentPage,limit,{isPublish: 1},{createdTimestamp: -1},[
+	queryList(
+		currentPage,limit,{isPublish: 1},{createdTimestamp: -1},[
 			{path: 'author', select: 'sid nickName icon -_id'},
 			{path: 'topic', select: 'sid name -_id'}
 		], 'Article', doc => {
-		res.status(200).send(result(doc, 0, '操作成功'));
+			res.status(200).send(result(doc, 0, '操作成功'));
+		}
+	);
+});
+
+//获取用户文章
+router.get('/api/user/article/:sid', logReqArguments, (req, res) => {
+	let limit = req.query.pageSize - 0 || 5,
+		currentPage = req.query.currentPage - 0 || 1,
+		skip = limit * (currentPage - 1),
+		query;
+	find('User', 'findOne', {sid: parseInt(req.params.sid)}, doc => {
+		if(doc){
+			query = {
+				isPublish: 1,
+				author: doc._id
+			};
+			queryList(
+				currentPage,limit,query,{createdTimestamp: -1},[
+					{path: 'author', select: 'sid nickName icon -_id'},
+					{path: 'topic', select: 'sid name -_id'}
+				], 'Article', doc => {
+					res.status(200).send(result(doc, 0, '操作成功'));
+				}
+			);
+		}else {
+			res.status(200).send(result({}, 1, '用户不存在'));
+		}
 	});
+});
+
+
+//获取指定文章
+router.get('/api/article/:sid', logReqArguments, (req, res) => {
+	find('Article', 'findOne', {sid: req.params.sid, isPublish: 1}, doc => {
+		if(doc){
+			let newArticle = doc;
+			newArticle.countHitted++;
+			update('Article', {sid: doc.sid}, newArticle, article => {
+				console.log('阅读次数更新成功');
+			});
+			res.status(200).send(result(doc, 0, '操作成功'));
+		}else{
+			res.status(200).send(result({}, 1, '文章不存在'));
+		}
+	});
+	/*	db.Article.findOne({sid: req.params.sid}, (err, article) => {
+	 if(err){
+	 throw err;
+	 }else{
+	 if(article.isPublish === 1){
+	 article.countHitted++;//点击(阅读)次数
+	 res.status(200).send(article);
+	 }else if(article.isPublish === 2){
+	 res.status(200).send(article);
+	 }else{
+	 res.status(200).send('文章不存在.');
+	 }
+	 }
+	 });*/
 });
 
 module.exports = router;

@@ -12,6 +12,7 @@ const state = {
 	user: {},
 	articleList: [],
 	pagination: {},
+	topicList: [],
 };
 
 export default new Vuex.Store({

@@ -77,9 +77,12 @@
 				<div class="article-content" v-if="item.content">
 					{{item.content}}
 				</div>
-				<div class="article-refs" v-if="item.refs">
-					<div class="img-warp" v-for="ref in item.refs">
-						<img :src="ref.src" alt="">
+				<div class="article-refs" v-if="item.picture">
+					<!--<div class="img-warp" v-for="ref in item.refs">-->
+						<!--<img :src="ref.src" alt="">-->
+					<!--</div>-->
+					<div class="img-warp">
+						<img :src="item.picture" alt="">
 					</div>
 				</div>
 				<div class="article-control">
@@ -89,7 +92,7 @@
 				</div>
 			</div>
 		</div>
-		<Pagination v-show="pagination.currentPage" :currentPage="pagination.currentPage" :totalPage="pagination.totalPage" :gotoPage="getArticles" />
+		<Pagination v-show="pagination.currentPage" :currentPage="pagination.currentPage" :totalPage="pagination.totalPage" :gotoPage="getArticleFn" />
     </div>
 </template>
 <script type="text/ecmascript-6">
@@ -98,21 +101,40 @@
 	export default{
 	    data(){
 	        return {
-
+				sid: '',
 			}
 		},
 		created(){
-	        this.getArticles(1);
+	        this.sid = this.$route.params.sid;
+	        this.getArticleFn(1);
 		},
 		methods: {
 			...mapActions([
-			    'getFreshArticle'
+			    'getFreshArticle',
+				'getUserArticle'
 			]),
-			getArticles(currentPage){
+			getFreshArticleFn(currentPage){
 			    this.getFreshArticle({
 					pageSize: 5,
 					currentPage: currentPage
-				})
+				});
+			},
+			getUserArticleFn(currentPage){
+				let _this = this;
+				this.getUserArticle({
+					pagination: {
+						pageSize: 5,
+						currentPage: currentPage
+					},
+					sid: _this.user.sid
+				});
+			},
+			getArticleFn(currentPage){
+				if(this.$route.params.sid){
+					this.getUserArticleFn(1)
+				}else{
+					this.getFreshArticleFn(1)
+				}
 			}
 		},
 		computed: {
@@ -121,8 +143,16 @@
 				'pagination'
 			])
 		},
+		mounted(){
+
+		},
 		components: {
 	        Pagination
+		},
+		watch: {
+		    sid(){
+		        this.getArticleFn(1);
+			}
 		}
 	}
 </script>

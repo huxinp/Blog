@@ -1,5 +1,5 @@
 import {
-	GETTOKEN, LOGIN, FRESH_ARTICLE, PUBLISH_ARTICLE
+	GETTOKEN, LOGIN, FRESH_ARTICLE, PUBLISH_ARTICLE, GET_TOPIC_LIST, USER_ARTICLE
 } from './mutation-type';
 
 import {cookie} from '../../assets/js/common';
@@ -31,5 +31,12 @@ export default {
 	},
 	[PUBLISH_ARTICLE](state, payload){
 		console.log(payload);
+	},
+	[GET_TOPIC_LIST](state, payload){
+		state.topicList = payload;
+	},
+	[USER_ARTICLE](state, payload){
+		state.articleList = payload.data;
+		state.pagination = payload.pagination;
 	}
 }

@@ -8,7 +8,7 @@ const generateSerialNumber = require('../handle/generateSerialNumber');
 module.exports = UserFavoriteSchema = new Schema(
 	{
 		sid: Number,				//记录流水号
-		content: {					//内容_id
+		article: {					//内容_id
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
@@ -16,8 +16,7 @@ module.exports = UserFavoriteSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
-		createdTimestamp: Number,	//收藏时间戳
-		countHit: Number			//点击次数
+		createdTimestamp: Number	//收藏时间戳
 	},
 	{ versionKey: false }
 );

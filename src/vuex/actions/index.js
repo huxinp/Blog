@@ -26,6 +26,15 @@ export default {
 			}
 		})
 	},
+	getUserArticle({commit}, payload){
+		axios.get(`/api/user/article/${payload.sid}?pageSize=${payload.pagination.pageSize}&currentPage=${payload.pagination.currentPage}`).then(res => {
+			if(res.data.code === 0){
+				commit('USER_ARTICLE', res.data.result);
+			}else{
+				console.log(res.data);
+			}
+		})
+	},
 	//发布新文章
 	publishArticle({commit, state}, payload){
 		axios.defaults.headers.common["Authorization"] =  'token ' + state.token;
@@ -34,5 +43,16 @@ export default {
 				commit('PUBLISH_ARTICLE', res.data.result);
 			}
 		}).catch(err => console.log(err));
+	},
+	getTopicList({commit}){
+		axios.get('/api/topic/list').then(res => {
+			if(res.data.code === 0){
+				commit('GET_TOPIC_LIST', res.data.result);
+			}else{
+				console.log(res.data);
+			}
+		}).catch(err => {
+			console.log(err);
+		})
 	}
 }

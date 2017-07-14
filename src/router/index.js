@@ -37,9 +37,19 @@ export default new Router({
 					component: ArticleList
 				},
 				{
+					path: ':sid',
+					name: 'List',
+					component: ArticleList
+				},
+				{
 					path: 'new',
 					name: 'NewArticle',
 					component: NewArticle
+				},
+				{
+					path: 'blog/:sid',
+					neame: 'MyBlog',
+					component: ArticleList
 				}
 			]
 		},

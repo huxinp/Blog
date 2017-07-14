@@ -68,8 +68,8 @@ router.post('/api/signin', logReqArguments, (req, res) => {
 						bgPicture: req.body.bgPicture,				//背景图片
 						signature: req.body.signature, 				//签名
 						birthday: req.body.birthday,				//生日
-						userLevel: 0,							//用户等级sid
-						userVFlag: 0,							//用户标识sid
+						userLevel: 0,								//用户等级sid
+						userVFlag: 0,								//用户标识sid
 						countFollowers: 0,							//关注我的人数
 						countUsersBeFllo: 0, 						//我关注的人数
 						countMainPageBe: 0, 						//主页被访问次数
