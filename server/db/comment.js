@@ -12,7 +12,7 @@ module.exports = CommentSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
-		user: {						//评论人_id
+		user: {							//评论人_id
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},

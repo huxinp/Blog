@@ -4,6 +4,8 @@ const user = require('./user');
 const upload = require('./upload');
 const topic = require('./topic');
 const favorite = require('./favorite');
+const follow = require('./follow');
+const comment = require('./comment');
 
 module.exports = app => {
 	app.use(article);
@@ -12,4 +14,6 @@ module.exports = app => {
 	app.use(upload);
 	app.use(topic);
 	app.use(favorite);
+	app.use(follow);
+	app.use(comment);
 };

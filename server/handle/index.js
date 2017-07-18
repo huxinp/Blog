@@ -1,7 +1,6 @@
 /**
  * Created by huxinpeng on 2017/7/13.
  */
-const Promise = require('bluebird');
 const db = require('../db');
 
 /**
@@ -17,7 +16,7 @@ const find = (modelName, method, query, next) => {
 		}else{
 			next(doc);
 		}
-	})
+	});
 };
 
 /**
@@ -43,8 +42,8 @@ const queryList = (page=1, size=5, query, sort, populate, modelName, next) => {
 					}
 				});
 			}
-		})
-	})
+		});
+	});
 };
 
 const save = (modelName, data, next) => {
@@ -54,7 +53,7 @@ const save = (modelName, data, next) => {
 		}else {
 			next(doc);
 		}
-	})
+	});
 };
 
 const update = (modelName, query, data, next) => {
@@ -64,12 +63,25 @@ const update = (modelName, query, data, next) => {
 		}else {
 			next(doc);
 		}
-	})
+	});
+};
+
+//findByIdAndRemove
+//findOneAndRemove
+const remove = (modelName, query, next) => {
+	db[modelName].findOneAndRemove(query, (err, doc) => {
+		if(err){
+			throw err;
+		}else{
+			next(doc);
+		}
+	});
 };
 
 module.exports = {
 	find,
 	queryList,
 	save,
-	update
+	update,
+	remove
 };

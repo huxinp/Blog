@@ -19,3 +19,24 @@ export const PUBLISH_ARTICLE = 'PUBLISH_ARTICLE';
 
 //获取话题列表
 export const GET_TOPIC_LIST = 'GET_TOPIC_LIST';
+
+//获取收藏列表
+export const GET_FAVORITE_LIST = 'GET_FAVORITE_LIST';
+
+//收藏
+export const FAVORITE = 'FAVORITE';
+
+//取消收藏
+export const FAVORITE_CANCEL = 'FAVORITE_CANCEL';
+
+//关注
+export const FOLLOW = 'FOLLOW';
+
+//取消关注
+export const FOLLOW_CANCEL = 'FOLLOW_CANCEL';
+
+//点赞 | 取消点赞
+export const RECIATE = 'RECIATE';
+
+//获取指定文章
+export const GET_ARTICLE = 'GET_ARTICLE';

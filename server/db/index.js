@@ -7,7 +7,7 @@ const UserFavoriteSchema = require('./user_favorite.js');
 const UserFollowSchema = require('./user_follow.js');
 const UserLevelSchema = require('./user_level.js');
 const ScoreSchema = require('./score.js');
-const AppreciateSchema = require('./appreciate.js');
+const ReciateSchema = require('./appreciate.js');
 const CommentSchema = require('./comment.js');
 const CommentReceivedSchema = require('./comment_received.js');
 const ContentRefSchema = require('./content_ref.js');
@@ -42,7 +42,7 @@ module.exports = {
 	//积分
 	Score: mongoose.model('Score', ScoreSchema),
 	//点赞
-	Appreciate: mongoose.model('Appreciate', AppreciateSchema),
+	Reciate: mongoose.model('Reciate', ReciateSchema),
 	//评论
 	Comment: mongoose.model('Comment', CommentSchema),
 	//接收到的评论

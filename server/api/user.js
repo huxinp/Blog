@@ -85,51 +85,6 @@ router.post('/api/signin', logReqArguments, (req, res) => {
 				res.status(200).send(result({}, 1, '账号或昵称已存在'));
 			}
 		});
-/*		db.User.find({
-				$or: [//多条件查询
-					{account: req.body.account},
-					{nickName: req.body.nickName}
-				]
-			}, (err, doc) => {
-			if(err){
-				throw err;
-			}else if(doc){
-				if(doc.length === 0){//没有查询到
-					let salt = rand(160, 36),
-						user = {
-						account: req.body.account,					//账号
-						nickName: req.body.nickName,				//昵称
-						sex: req.body.sex,							//1 男     2 女     3 未知
-						age: req.body.age,							//年龄
-						mobilePhone: req.body.mobilePhone, 			//手机号
-						password: sha1(req.body.password + salt),	//密码
-						salt: salt,									//密码加密的盐
-						icon: req.body.icon,						//头像
-						bgPicture: req.body.bgPicture,				//背景图片
-						signature: req.body.signature, 				//签名
-						birthday: req.body.birthday,				//生日
-						userLevel: 0,							//用户等级sid
-						userVFlag: 0,							//用户标识sid
-						countFollowers: 0,							//关注我的人数
-						countUsersBeFllo: 0, 						//我关注的人数
-						countMainPageBe: 0, 						//主页被访问次数
-						totalContents: 0,							//发布的内容总数
-						lastLoginDatetime: Date(), 					//上一次登录时间
-						countReciateNot: 0,							//未读点赞数
-						countCommentNot: 0							//未读评论数
-					};
-					new db.User(user).save((err, doc) => {
-						if (err) {
-							throw err;
-						} else {
-							res.status(200).send(result(doc, 0, '注册成功'));
-						}
-					});
-				}else {
-					res.status(200).send(result({}, 1, '账号或昵称已存在'));
-				}
-			}
-		});*/
 	}
 });
 

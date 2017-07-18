@@ -4,7 +4,6 @@
 const Promise = require('bluebird');
 const mongoose = Promise.promisifyAll(require('mongoose'));
 mongoose.Promise = Promise;
-// const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const db = require('../db');
 const generateSerialNumber = require('../handle/generateSerialNumber');
@@ -23,10 +22,10 @@ module.exports = UserSchema = new Schema(
 		bgPicture: String,			//背景图片
 		signature: String, 			//签名
 		birthday: Date,				//生日
-		userLevelId: {
+		userLevelId: {				//用户等级sid
 			type: Schema.Types.ObjectId,
 			ref: 'UserLevel'
-		},		//用户等级sid
+		},
 		// userVFlagId: Number,		//用户标识sid
 		countFollowers: Number,		//关注我的人数
 		countUsersBeFllo: Number, 	//我关注的人数

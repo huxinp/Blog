@@ -2,7 +2,6 @@
     <div class="side-bar">
 		<a href="javascript:;" @click="newArticle">发布文章</a>
 		<a href="javascript:;">特别关心</a>
-		<a href="javascript:;">关注的人</a>
 		<a href="javascript:;">我的收藏</a>
 		<a href="javascript:;">我的等级</a>
     </div>

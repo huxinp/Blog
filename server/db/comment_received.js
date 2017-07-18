@@ -20,7 +20,7 @@ module.exports = CommentReceivedSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
-		comment: String,				//发表的评论
+		comment: String,				//评论
 		picture: String,				//评论图片
 		countReciated: Number,			//评论被点赞次数
 		last: {							//被回复评论_id

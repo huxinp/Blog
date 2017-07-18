@@ -8,14 +8,8 @@ const generateSerialNumber = require('../handle/generateSerialNumber');
 module.exports = ReciateSchema = new Schema(
 	{
 		sid: Number,
-		content: {					//被点赞的_id
-			type: Schema.Types.ObjectId,
-			ref: 'Article'
-		},
-		user: {						//点赞人的_id
-			type: Schema.Types.ObjectId,
-			ref: 'User'
-		},
+		contentSid: Number,				//被点赞的评论的 sid
+		userSid: Number,						//点赞人的 sid
 		createdTimestamp: Number	//点赞时间戳
 	},
 	{ versionKey: false }

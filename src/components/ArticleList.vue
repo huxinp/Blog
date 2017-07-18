@@ -61,7 +61,7 @@
 <template>
     <div class="article-list">
 		<div class="list">
-			<div class="item" v-for="item in articleList">
+			<div class="item" v-for="item in articleList" @click="getArticleFn(item.sid)">
 				<div class="article-header">
 					<div class="article-author">
 						<div class="icon">
@@ -106,12 +106,13 @@
 		},
 		created(){
 	        this.sid = this.$route.params.sid;
-	        this.getArticleFn(1);
+	        this.getArticlesFn(1);
 		},
 		methods: {
 			...mapActions([
 			    'getFreshArticle',
-				'getUserArticle'
+				'getUserArticle',
+				'getArticle'
 			]),
 			getFreshArticleFn(currentPage){
 			    this.getFreshArticle({
@@ -129,12 +130,15 @@
 					sid: _this.user.sid
 				});
 			},
-			getArticleFn(currentPage){
+			getArticlesFn(currentPage){
 				if(this.$route.params.sid){
 					this.getUserArticleFn(1)
 				}else{
 					this.getFreshArticleFn(1)
 				}
+			},
+			getArticleFn(articleSid){
+			    this.getArticle(articleSid);
 			}
 		},
 		computed: {

@@ -8,11 +8,11 @@ const generateSerialNumber = require('../handle/generateSerialNumber');
 module.exports = UserContentSchema = new Schema(
 	{
 		sid: Number,					//记录流水号
-		user: {						//用户sid
+		user: {							//用户sid
 			type: Schema.Types.ObjectId,
 			ref: 'User'
 		},
-		content: {					//内容流水号
+		content: {						//内容流水号
 			type: Schema.Types.ObjectId,
 			ref: 'Article'
 		},
